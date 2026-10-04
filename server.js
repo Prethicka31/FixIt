@@ -9,8 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// MongoDB Connection
 mongoose
-  .connect("mongodb://127.0.0.1:27017/fixit")
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("MongoDB Connected Successfully!");
   })
@@ -18,10 +19,12 @@ mongoose
     console.log("MongoDB Connection Error:", error);
   });
 
+// Home
 app.get("/", (req, res) => {
   res.send("FixIt Backend is Running!");
 });
 
+// Register
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -55,6 +58,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Login
 app.post("/login", async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -106,6 +110,8 @@ app.get("/complaints", async (req, res) => {
     });
   }
 });
+
+// Submit Complaint
 app.post("/complaints", async (req, res) => {
   try {
     const complaint = new Complaint(req.body);
@@ -124,6 +130,7 @@ app.post("/complaints", async (req, res) => {
   }
 });
 
+// Update Complaint Status
 app.put("/complaints/:id", async (req, res) => {
   try {
     const complaint = await Complaint.findByIdAndUpdate(
@@ -148,8 +155,12 @@ app.put("/complaints/:id", async (req, res) => {
   }
 });
 
+// Start Server
 const PORT = 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
+
+
+
